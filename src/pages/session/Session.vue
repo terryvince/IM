@@ -689,17 +689,17 @@ export default ctr
             </div>
             <div class="scroll-wrap">
               <div class="box-bd" ref="msg_list">
-                <div class="message" :class="{'you':item.type==1,'me':item.type==0,'no-arrow':item.msgType =='image'}" v-for="item of currentForm.messages" :key="item.messageid">
+                <div class="message" :class="{'you':item.toidInt!=item.fromid && item.toidInt==userid,'me':item.fromid==userid,'no-arrow':item.msgtype == 3}" v-for="item of currentForm.messages" :key="item.msgid">
                   <img class="avatar" src="../../assets/bg.jpg" alt="">
                   <div class="content">
-                    <div class="bubble" :class="{'clear-bg':item.msgType =='image'}">
+                    <div class="bubble" :class="{'clear-bg':item.msgtype == 3}">
                       <div class="bubble-cont">
-                        <div class="plain" v-if="item.msgType == 'text'">
+                        <div class="plain" v-if="item.msgtype == 1">
                           <pre class="message-plain">{{item.data}}</pre>
                           <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
                           <img v-show="false" class="ico_loading" src="../../assets/loading.gif" alt="">
                         </div>
-                        <div class="image" v-if="item.msgType == 'image'">
+                        <div class="image" v-if="item.msgtype == 3">
                           <img :src="item.msg" alt="" :style='item.style'>
                           <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
                           <img class="ico_loading" src="../../assets/loading.gif" alt="">

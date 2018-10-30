@@ -1,8 +1,9 @@
 import $ from 'jquery'
-import {api} from '@/api'
+import {api, msgType} from '@/api'
 import {mapGetters, mapMutations} from 'vuex'
 import chatHeader from '../../components/ChatHeader'
 import profileCard from '../../components/ProfileCard'
+
 export default {
   name: 'session',
   components: {
@@ -34,7 +35,8 @@ export default {
       [
         'sessions',
         'currentForm',
-        'profile'
+        'profile',
+        'userid'
       ]
     )
   },
@@ -62,9 +64,9 @@ export default {
     sendMsg () {
       let me = this
       if (me.currentForm.userType === 1) {
-        api.sendToFriendMessage({friendId: me.currentForm.frid, msgType: 'text', content: this.temp_msg})
+        api.sendToFriendMessage({friendId: me.currentForm.frid, msgtype: msgType.TEXT, content: this.temp_msg})
       } else {
-        api.sendToGroupMessage({groupId: me.currentForm.frid, msgType: 'text', content: this.temp_msg})
+        api.sendToGroupMessage({groupId: me.currentForm.frid, msgtype: msgType.TEXT, content: this.temp_msg})
       }
       this.temp_msg = ''
     },

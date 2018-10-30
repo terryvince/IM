@@ -10,6 +10,8 @@ export const groupContactors = state => state.groupContactors
 
 export const connected = state => state.connected
 
+export const userid = state => state.userid
+
 export const unreadReqCount = state => state.unreadReqCount
 
 export const unreadMsgCount = state => state.unreadMsgCount

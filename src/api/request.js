@@ -1,4 +1,4 @@
-import {jc, bus} from '@/utils'
+import {jc, bus, guid} from '@/utils'
 import store from '@/store'
 
 // 拉取好友列表
@@ -61,6 +61,8 @@ async function login ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemType = 100
       })
   }).then(function (data) {
     result = data
+    store.commit('setUserId', parseInt(data.data.userid))
+    localStorage.setItem('userid', parseInt(data.data.userid))
   }, function (err) {
     result = err
   })
@@ -139,7 +141,7 @@ async function getFriendInfoByAccount (account) {
   return result
 }
 
-/* 拉取好友消息(聊天记录)
+/* 拉取好友消息(聊天记录)     【废弃】
  *
  *  frlastid 好友消息id
  */
@@ -162,28 +164,98 @@ async function getFriendsMessageList () {
   return result
 }
 
+/* 拉取所有消息(含普通消息和特殊消息)
+ *
+ *  lastid 消息id
+ */
+async function getAllMessageList () {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/getMessages',
+      {
+        lastid: store.state.pushMessage.lastid
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  })
+  return result
+}
+
+/* 拉取群成员列表(含普通消息和特殊消息)
+ *
+ */
+async function getGroupUserList () {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/getGroupUserList', null, function (res) {
+      if (!res.isSuccessed()) {
+        reject(res.getData())
+      } else {
+        resolve(res.getData())
+      }
+    })
+  }).then(function (data) {
+    result = data
+  })
+  return result
+}
+
+/* 拉取群成员信息
+ *
+ *  lastid 消息id
+ */
+async function getGroupUserInfo (frid) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/getGroupUserInfo',
+      {
+        frid: frid
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  })
+  return result
+}
+
 /* 发送消息
  *
  *  fromid 好友消息id data 发送内容
  */
-function sendToFriendMessage ({friendId, content}) {
-  jc.request('/friendMessage',
-    {
-      fromid: friendId,
-      data: content
-    })
+function sendToFriendMessage ({friendId, content, msgtype}) {
+  let msg = {
+    fromid: friendId,
+    data: content,
+    msgtype: msgtype,
+    localid: guid()
+  }
+  jc.request('/friendMessage', msg)
+  // store.commit('addUnSendedMsg', msg)
 }
 
 /* 发送群消息
  *
  *  groupid 群id data 发送内容
  */
-function sendToGroupMessage ({groupId, content}) {
-  jc.request('/onMessageGroup',
-    {
-      groupid: groupId,
-      data: content
-    })
+function sendToGroupMessage ({groupId, content, msgtype}) {
+  let msg = {
+    groupid: groupId,
+    data: content,
+    msgtype: msgtype,
+    localid: guid()
+  }
+  jc.request('/onMessageGroup', msg)
 }
 
 /*
@@ -220,5 +292,8 @@ export {
   sendToFriendMessage,
   getUserInfo,
   establishGroup,
-  sendToGroupMessage
+  sendToGroupMessage,
+  getAllMessageList,
+  getGroupUserList,
+  getGroupUserInfo
 }

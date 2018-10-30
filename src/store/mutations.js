@@ -43,12 +43,33 @@ export default {
     }
   },
   addFriendMeassage (state, msg) {
-    if (!state.sessions[msg.fromid]) {
-      let form = {frid: msg.fromid, messages: []}
-      vue.$set(state.sessions, msg.fromid, form)
+    let other
+    let toid = parseInt(msg.toid.slice(msg.toid.indexOf('_') + 1))
+    msg.toidInt = toid
+    if (msg.fromid === toid) {
+      other = msg.fromid
+    } else {
+      if (msg.fromid === state.userid) {
+        other = toid
+      } else if (toid === state.userid) {
+        other = msg.fromid
+      }
     }
-    state.sessions[msg.fromid].messages.push(msg)
+    if (!state.sessions[other]) {
+      let form = {frid: other, messages: []}
+      vue.$set(state.sessions, other, form)
+    }
+    state.sessions[other].messages.push(msg)
     state.messages.push(msg)
+  },
+  addUnSendedMsg (state, msg) {
+    state.unSendedMsg[msg.localid] = msg
+  },
+  setSendedMsg (state, msg) {
+    delete state.unSendedMsg[msg.localid]
+  },
+  setUserId (state, id) {
+    state.userid = id
   },
   logout (state) {
     state.username = ''
@@ -62,11 +83,13 @@ export default {
     state.connected = false
     state.lostConnect = false
     state.unSendMsg = []
-    state.tempPushMessage = {lastid: 0, frlastid: 0, sylastid: 0}
-    state.pushMessage = {lastid: 0, frlastid: 0, sylastid: 0}
+    state.tempPushMessage = {lastid: 0}
+    state.pushMessage = {lastid: 0}
     state.profile = {}
     state.isLogin = false
+    state.userid = null
     try {
+      localStorage.removeItem('userid')
       localStorage.removeItem('username')
       localStorage.removeItem('password')
       localStorage.removeItem('isLogin')

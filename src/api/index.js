@@ -3,6 +3,7 @@ import {jc, bus} from '@/utils'
 import store from '@/store'
 import * as request from './request'
 import './response'
+import msgType from './msgType'
 
 let api = {
   ...request
@@ -61,9 +62,8 @@ function syncData () {
 function comparePushMessage (data) {
   if (data && data.code !== 1 && data.lastid !== store.state.pushMessage.lastid) {
     store.commit('setTempPushMessage', data.data)
-    comparePushMessageFrlastid()
-    comparePushMessageSylastid()
-    console.log('进入比较分支')
+    pullCommonMessage()
+    console.log('进入lastid比较分支')
   } else {
     syncData()
     console.log('lastId无变化，继续发送同步请求')
@@ -71,47 +71,43 @@ function comparePushMessage (data) {
   console.log(data, '---心跳返回值')
 }
 
-// 比较好友id是否一致 调用了自身，还调用了compareId
-function comparePushMessageFrlastid () {
+// 拉取所有消息
+function pullCommonMessage () {
   if (store.state.pushMessage.lastid !== store.state.tempPushMessage.lastid) {
     // todo 拉取操作
-    api.getFriendsMessageList().then(function (data) {
+    api.getAllMessageList().then(function (data) {
       console.log(data, '------好友消息列表返回值')
       if (data.code !== 1) {
         let tempArr = data.data.sort((a, b) => {
-          return a.messageid - b.messageid
+          return a.msgid - b.msgid
         })
         data.data.forEach(v => {
-          v.msgType = 'text'
           store.commit('addFriendMeassage', v)
         })
-        let lastId = tempArr[tempArr.length - 1].messageid
-        store.commit('setPushMessage', {frlastid: lastId})
-        comparePushMessageFrlastid()
+        let lastId = tempArr[tempArr.length - 1].msgid
+        store.commit('setPushMessage', {lastid: lastId})
+        pullCommonMessage()
       }
+    }).catch(err => {
+      console.log('拉取好友消息超时或发生错误：' + err)
     })
+  } else {
+    syncData()
   }
-  compareId()
+  // compareId()
 }
 
 // 比较所有id是否一致 调用了同步请求syncData
-function compareId () {
-  let tem = store.state.tempPushMessage
-  let push = store.state.pushMessage
-  if (push.frlastid >= tem.frlastid) {
-    if (push.sylastid >= tem.sylastid) {
-      store.commit('setPushMessage', {lastid: tem.lastid})
-      syncData()
-    }
-  }
-}
-
-// 比较系统消息id是否一致
-function comparePushMessageSylastid () {
-  if (store.state.pushMessage.sylastid !== store.state.tempPushMessage.sylastid) {
-    // todo 拉取操作
-  }
-}
+// function compareId () {
+//   let tem = store.state.tempPushMessage
+//   let push = store.state.pushMessage
+//   if (push.frlastid >= tem.frlastid) {
+//     if (push.sylastid >= tem.sylastid) {
+//       store.commit('setPushMessage', {lastid: tem.lastid})
+//       syncData()
+//     }
+//   }
+// }
 
 /* ***************************         登录时拉取信息           *********************************** */
 // 拉取联系人列表 包含好友和群的联系人列表
@@ -155,4 +151,4 @@ async function pullProfile () {
   return complete
 }
 
-export {api, comparePushMessage, pullContactList}
+export {api, comparePushMessage, pullContactList, msgType}

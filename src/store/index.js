@@ -14,19 +14,20 @@ const state = {
   unreadReqCount: 0,
   contactors: [],
   groupContactors: [],
-  // {"idx":5,"code":200,"data":{"lastid":4,"frlastid":1,"grlastid":1,"sylastid":1,"time":9999}}
-  tempPushMessage: {lastid: 0, frlastid: 0, sylastid: 0},
-  pushMessage: {lastid: 0, frlastid: 0, sylastid: 0},
+  // {"idx":5,"code":200,"data":{"lastid":4,"time":9999}}
+  tempPushMessage: {lastid: 0},
+  pushMessage: {lastid: 0},
 
   profile: {},
 
   connected: false,
+  userid: localStorage.userid || null,
   isLogin: localStorage.isLogin || false,
   username: localStorage.username || '',
   password: localStorage.password || '',
   active: 'message',
   lostConnect: false,
-  unSendMsg: [],
+  unSendedMsg: {},
   isAlertTips: false
 }
 
