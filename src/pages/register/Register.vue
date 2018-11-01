@@ -1,5 +1,29 @@
+<template>
+  <div class="register center box-shadow">
+    <!--<h1 class="fs-26 txt-bold txt-white" style="background:#0066CC;border-radius: 5px 5px 0 0;height: 80px;line-height: 80px;">账号注册</h1>-->
+    <form>
+      <div class="input-group fs-30">
+        <input class="txt-input fs-18" v-model="form.username" type="text" placeholder="请输入你的用户名">
+        <i class="icon icon-user"></i>
+      </div>
+      <div class="input-group fs-30">
+        <input class="txt-input fs-18" v-model="form.password" type="password" placeholder="请输入你的密码">
+        <i class="icon icon-lock"></i>
+      </div>
+      <div class="input-group fs-30">
+        <input class="txt-input fs-18" v-model="form.comfirmPwd" type="password" placeholder="确认密码">
+        <i class="icon icon-lock"></i>
+      </div>
+      <a @click="sendRegister()" class="btn txt-white fs-22">注&nbsp;&nbsp;册</a>
+      <div class="check-group top-25 clear">
+        <a class="right-float txt-underline">通过手机号注册</a>
+      </div>
+    </form>
+  </div>
+</template>
+
 <script>
-import * as ctr from './registerCtr'
+import ctr from './registerCtr'
 export default ctr
 </script>
 
@@ -75,28 +99,3 @@ export default ctr
     }
   }
 </style>
-
-<template>
-  <div class="register center box-shadow">
-    <!--<h1 class="fs-26 txt-bold txt-white" style="background:#0066CC;border-radius: 5px 5px 0 0;height: 80px;line-height: 80px;">账号注册</h1>-->
-    <form>
-      <div class="input-group fs-30">
-        <input class="txt-input fs-18" type="text" placeholder="请输入你的用户名">
-        <i class="icon icon-user"></i>
-      </div>
-      <div class="input-group fs-30">
-        <input class="txt-input fs-18" type="password" placeholder="请输入你的密码">
-        <i class="icon icon-lock"></i>
-      </div>
-      <div class="input-group fs-30">
-        <input class="txt-input fs-18" type="password" placeholder="确认密码">
-        <i class="icon icon-lock"></i>
-      </div>
-      <router-link :to="{path:'/'}" class="btn txt-white fs-22">注&nbsp;&nbsp;册</router-link>
-      <!--<div class="check-group top-25 clear">-->
-        <!--<label for="rember_pwd" class="left-float"><input id="rember_pwd" type="checkbox">&nbsp;记住密码</label>-->
-        <!--<a class="right-float">忘记密码？</a>-->
-      <!--</div>-->
-    </form>
-  </div>
-</template>

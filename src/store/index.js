@@ -14,6 +14,7 @@ const state = {
   unreadReqCount: 0,
   contactors: [],
   groupContactors: [],
+  groupMemberList: [],
   // {"idx":5,"code":200,"data":{"lastid":4,"time":9999}}
   tempPushMessage: {lastid: 0},
   pushMessage: {lastid: 0},

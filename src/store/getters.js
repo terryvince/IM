@@ -8,6 +8,8 @@ export const contactors = state => state.contactors
 
 export const groupContactors = state => state.groupContactors
 
+export const groupMemberList = state => state.groupMemberList
+
 export const connected = state => state.connected
 
 export const userid = state => state.userid

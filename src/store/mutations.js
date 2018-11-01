@@ -22,6 +22,9 @@ export default {
   setGroupContactors (state, arr) {
     state.groupContactors = arr
   },
+  setGroupMemberList (state, arr) {
+    state.groupMemberList = arr
+  },
   setProfile (state, ob) {
     state.profile = ob
   },
@@ -32,35 +35,51 @@ export default {
     Object.assign(state.pushMessage, ob)
   },
   setCurrentForm (state, ob) {
-    if (!state.sessions[ob.frid]) {
-      ob.messages = []
-      state.currentForm = ob
-      let key = ob.frid
+    let key = ob.frid
+    if (!state.sessions[key]) {
+      vue.$set(ob, 'messages', [])
       vue.$set(state.sessions, key, ob)
     } else {
-      Object.assign(state.sessions[ob.frid], ob)
-      state.currentForm = state.sessions[ob.frid]
+      Object.assign(state.sessions[key], ob)
     }
+    state.currentForm = state.sessions[key]
   },
   addFriendMeassage (state, msg) {
     let other
-    let toid = parseInt(msg.toid.slice(msg.toid.indexOf('_') + 1))
+    let separatorIndex = msg.toid.indexOf('_') // 分隔符
+    let toid = parseInt(msg.toid.slice(separatorIndex + 1)) // 取出整数toid
+    let flag = msg.toid.slice(0, separatorIndex) // toid前缀
+    let userType = { g: 3, f: 1 }[flag] // 区分类型，是群还是好友
     msg.toidInt = toid
-    if (msg.fromid === toid) {
+    if (msg.fromid === toid) { // 判断收发方
       other = msg.fromid
     } else {
-      if (msg.fromid === state.userid) {
+      if (msg.fromid === state.userid) { // 我发出去的消息
         other = toid
-      } else if (toid === state.userid) {
+      } else if (toid === state.userid) { // 别人发给我的消息
         other = msg.fromid
       }
     }
-    if (!state.sessions[other]) {
-      let form = {frid: other, messages: []}
+    if (!state.sessions[other]) { // 判断接收的消息存不存在会话
+      let form = {frid: other, messages: [], userType: userType}
+      if (userType === 3) { // 为新建的窗口命名
+        state.groupContactors.forEach(v => {
+          if (v.frid === other) {
+            Object.assign(form, v)
+          }
+        })
+      } else if (userType === 1) {
+        state.contactors.forEach(v => {
+          if (v.frid === other) {
+            Object.assign(form, v)
+          }
+        })
+      }
       vue.$set(state.sessions, other, form)
     }
     state.sessions[other].messages.push(msg)
     state.messages.push(msg)
+    vue.$set(state.sessions[other], 'lastedMsg', msg)
   },
   addUnSendedMsg (state, msg) {
     state.unSendedMsg[msg.localid] = msg

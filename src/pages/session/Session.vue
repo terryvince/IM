@@ -643,7 +643,7 @@ export default ctr
 
             <div @click="selectedItem(item)" :class="{'active':item.isSelected}" class="chat-item" v-for="item of sessions" :key="item.frid">
               <div class="ext">
-                <p class="attr">11:11</p>
+                <p class="attr">{{(item.lastedMsg && item.lastedMsg.time) | formatDate('time')}}</p>
               </div>
               <div class="avatar">
                 <img v-show="item.headurl" :src="item.headurl" alt="头像">
@@ -652,7 +652,7 @@ export default ctr
               <div class="info">
                 <h3 class="nickname txt-left">
                   <span class="nickname-text">{{item.nickname}}</span>
-                  <span class="msg">你去找他</span>
+                  <span class="msg">{{item.lastedMsg && item.lastedMsg.data}}</span>
                 </h3>
               </div>
             </div>
@@ -672,9 +672,10 @@ export default ctr
                 <div class="mmpop members_wrp slide-down">
                   <div class="members">
                     <div class="members_inner">
-                      <div v-for="item of [1,2,3,4,5,6,7,8,9]" :key="item" class="member">
-                        <img @click.self.stop="setProfileCard($event,item)" class="avatar" src="../../assets/bg.jpg" title="">
-                        <p class="nickname">魑丶</p>
+                      <div v-for="item of groupMemberList" :key="item.frid" class="member">
+                        <img v-show="!item.headurl" @click.self.stop="setProfileCard($event,item)" class="avatar" src="../../assets/bg.jpg" :title="item.nickname">
+                        <img v-show="item.headurl" @click.self.stop="setProfileCard($event,item)" class="avatar" :src="item.headurl" :title="item.nickname">
+                        <p class="nickname">{{item.nickname}}</p>
                       </div>
                     </div>
                   </div>

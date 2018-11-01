@@ -104,7 +104,7 @@ const vue = new Vue({
 
 // function f1 () {
 //   return new Promise(resolve => {
-//     setTimeout(() => { resolve('one') }, 1000)
+//     setTimeout(() => { resolve('one') }, 60 * 1000)
 //   })
 // }
 //
@@ -133,5 +133,59 @@ const vue = new Vue({
 // }).then(f2).then(f3).catch(err => {
 //   console.log(err)
 // })
+
+// f1().then(data => {
+//   console.log(data, '执行完毕')
+// })
+
+Vue.filter('formatDate', function (v, option) {
+  console.log(v, '--------------时间')
+  if (!v) return ''
+  if (v.toString().length === 10) {
+    v = v * 1000
+  }
+  let d = new Date(v)
+  let second = d.getSeconds()
+  let minute = d.getMinutes()
+  let hours = d.getHours()
+  let date = d.getDate()
+  let month = d.getMonth()
+  let year = d.getFullYear()
+  // 月份增加前导0
+  if (month.toString().length === 1) {
+    month = '0' + month
+  }
+  // 日期增加前导0
+  if (date.toString().length === 1) {
+    date = '0' + date.toString()
+  }
+  // 小时增加前导0
+  if (hours.toString().length === 1) {
+    hours = '0' + hours.toString()
+  }
+  // 分钟增加前导0
+  if (minute.toString().length === 1) {
+    minute = '0' + minute.toString()
+  }
+  // 秒数增加前导0
+  if (second.toString().length === 1) {
+    second = '0' + second.toString()
+  }
+  switch (option) {
+    case 'date' :
+      v = year + '-' + month + '-' + date
+      break
+    case 'time' :
+      v = hours + ':' + minute + ':' + second
+      break
+    case 'dateTime' :
+      v = year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second
+      break
+    default :
+      v = year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second
+      break
+  }
+  return v
+})
 
 export default vue

@@ -29,16 +29,18 @@ export default {
 
 <template>
   <div @click.stop="" id="ProfileCard" ref="profile_card" class="mmpop_profile">
-    <div class="profile_mini">
+    <div class="profile_mini" v-if="cardParms.data">
       <div class="profile_mini_hd">
         <div class="avatar">
-          <img class="img" src="../assets/bg.jpg" alt="">
+          <img v-show="!cardParms.data.headurl" class="img" src="../assets/bg.jpg" alt="">
+          <img v-show="cardParms.data.headurl" class="img" :src="cardParms.data.headurl" alt="">
         </div>
       </div>
       <div class="profile_mini_bd">
         <div class="nickname_area">
-          <h4 class="nickname">茶语e族</h4>
-          <i class="icon icon-man"></i>
+          <h4 class="nickname">{{cardParms.data.nickname}}</h4>
+          <i v-if="cardParms.data.sex==0" class="sex icon icon-man fs-16"></i>
+          <i v-if="cardParms.data.sex==1" class="sex icon icon-woman fs-16"></i>
         </div>
         <div class="meta_area">
           <div class="meta_item">
@@ -110,5 +112,11 @@ export default {
         }
       }
     }
+  }
+  .icon-man{
+    color: #0099FF;
+  }
+  .icon-woman{
+    color: #FF0099;
   }
 </style>

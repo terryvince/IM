@@ -6,7 +6,9 @@ import './response'
 import msgType from './msgType'
 
 let api = {
-  ...request
+  ...request,
+  pullContactList,
+  pullGroupMemberList
 }
 
 // websocket链接打开时，刷新重连并自动登录
@@ -88,6 +90,9 @@ function pullCommonMessage () {
         store.commit('setPushMessage', {lastid: lastId})
         pullCommonMessage()
       }
+      // else {
+      //   comparePushMessage()
+      // }
     }).catch(err => {
       console.log('拉取好友消息超时或发生错误：' + err)
     })
@@ -115,7 +120,6 @@ async function pullContactList () {
   /* eslint-disable no-unused-vars */
   let tempArr = []
   let contactorList = []
-  let complete
   await new Promise(function (resolve) {
     api.getFriendsList().then(function (data) {
       if (data.code === 0) {
@@ -129,16 +133,14 @@ async function pullContactList () {
               store.commit('setGroupContactors', contactorList.filter(v => v.userType === 3))
               resolve(contactorList)
             }
-          }).catch(err => {
-            console.log('拉取信息请求超时或发生错误：', err)
           })
         })
       }
+    }).catch(err => {
+      console.log('拉取信息请求超时或发生错误：', err)
     })
-  }).then(function (data) {
-    complete = data
   })
-  return complete
+  return contactorList
 }
 
 // 拉取个人资料
@@ -151,4 +153,35 @@ async function pullProfile () {
   return complete
 }
 
-export {api, comparePushMessage, pullContactList, msgType}
+// 拉取群成员列表及信息
+async function pullGroupMemberList (item) {
+  let groupMemberList = []
+  let groupId = item.frid
+  await new Promise(resolve => {
+    if (item.userType === 3) {
+      api.getGroupUserList(groupId).then(data1 => {
+        data1.data.forEach(v => {
+          api.getGroupUserInfo({groupid: groupId, frid: v}).then(data2 => {
+            data2.data.frid = v
+            groupMemberList.push(data2.data)
+            if (groupMemberList.length === data1.data.length) {
+              resolve(groupMemberList)
+            }
+          })
+        })
+      })
+    } else if (item.userType === 1) {
+      api.getFriendInfoById(groupId).then(data => {
+        data.data.frid = groupId
+        groupMemberList.push(data.data)
+        resolve(groupMemberList)
+      })
+    }
+  }).catch(err => {
+    console.log('拉取群成员列表发生错误或超时：', err)
+  })
+  store.commit('setGroupMemberList', groupMemberList)
+  return groupMemberList
+}
+
+export {api, comparePushMessage, msgType}

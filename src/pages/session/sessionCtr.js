@@ -36,7 +36,8 @@ export default {
         'sessions',
         'currentForm',
         'profile',
-        'userid'
+        'userid',
+        'groupMemberList'
       ]
     )
   },
@@ -95,6 +96,7 @@ export default {
       //   this.$set(me.sessions[k], 'isSelected', false)
       // })
       // item.isSelected = true
+      api.pullGroupMemberList(item)
       this.setCurrentForm(item)
     },
     msgToDown () {

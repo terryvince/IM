@@ -35,19 +35,53 @@ async function getUserInfo () {
   return result
 }
 
+/* 注册
+ *
+ *ver 版本号 loginType 1账号 2手机 deviceid 设备码 , userostype web 1001
+ */
+async function register ({logintype = 1, username, password}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/register',
+      {
+        ver: 0,
+        logintype: logintype,
+        deviceid: 'FC-AA-14-BC-7D-01',
+        userostype: 1001,
+        osversion: 0,
+        screen: '',
+        username: username,
+        password: password
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }, function (err) {
+    result = err
+  })
+  return result
+}
+
 /* 登录
  *
- *ver 版本号 loginType 1账号 2手机 deviceId 设备码 , systemType web 1001
+ *ver 版本号 loginType 1账号 2手机 deviceid 设备码 , userostype web 1001
  */
-async function login ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemType = 1001, loginType = 1, username = '123456', password = '123456'}) {
+async function login ({loginType = 1, username, password}) {
   let result
   await new Promise(function (resolve, reject) {
     jc.request('/login',
       {
-        ver: ver,
+        ver: 0,
         logintype: loginType,
-        deviceid: deviceId,
-        userostype: systemType,
+        deviceid: 'FC-AA-14-BC-7D-01',
+        userostype: 1001,
+        osversion: 0,
+        screen: '',
         username: username,
         password: password
       }, function (res) {
@@ -76,7 +110,7 @@ async function login ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemType = 100
 async function establishGroup ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemType = 1001, loginType = 1, groupName}) {
   let result
   await new Promise(function (resolve, reject) {
-    jc.request('/establishGroup',
+    jc.request('/createGroup',
       {
         ver: ver,
         logintype: loginType,
@@ -187,19 +221,22 @@ async function getAllMessageList () {
   return result
 }
 
-/* 拉取群成员列表(含普通消息和特殊消息)
+/* 拉取群成员列表
  *
  */
-async function getGroupUserList () {
+async function getGroupUserList (groupid) {
   let result
   await new Promise(function (resolve, reject) {
-    jc.request('/getGroupUserList', null, function (res) {
-      if (!res.isSuccessed()) {
-        reject(res.getData())
-      } else {
-        resolve(res.getData())
-      }
-    })
+    jc.request('/getGroupUserList',
+      {
+        fromid: groupid
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
   }).then(function (data) {
     result = data
   })
@@ -210,12 +247,13 @@ async function getGroupUserList () {
  *
  *  lastid 消息id
  */
-async function getGroupUserInfo (frid) {
+async function getGroupUserInfo ({frid, groupid}) {
   let result
   await new Promise(function (resolve, reject) {
     jc.request('/getGroupUserInfo',
       {
-        frid: frid
+        frid: frid,
+        fromid: groupid
       }, function (res) {
         if (!res.isSuccessed()) {
           reject(res.getData())
@@ -250,7 +288,7 @@ function sendToFriendMessage ({friendId, content, msgtype}) {
  */
 function sendToGroupMessage ({groupId, content, msgtype}) {
   let msg = {
-    groupid: groupId,
+    fromid: groupId,
     data: content,
     msgtype: msgtype,
     localid: guid()
@@ -285,6 +323,7 @@ async function sendSync () {
 export {
   getFriendsList,
   login,
+  register,
   sendSync,
   getFriendsMessageList,
   getFriendInfoById,

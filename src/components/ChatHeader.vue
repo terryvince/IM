@@ -87,7 +87,7 @@
 
 <script>
 import {mapGetters, mapMutations} from 'vuex'
-import {api, pullContactList} from '../api'
+import {api} from '../api'
 export default {
   name: 'chatHeader',
   data () {
@@ -116,7 +116,7 @@ export default {
       api.establishGroup({groupName: this.formGroup.groupName})
         .then(data => {
           if (data.code === 0) {
-            pullContactList()
+            api.pullContactList()
           } else {
             console.log('创建群失败！')
           }
