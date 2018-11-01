@@ -139,7 +139,6 @@ const vue = new Vue({
 // })
 
 Vue.filter('formatDate', function (v, option) {
-  console.log(v, '--------------时间')
   if (!v) return ''
   if (v.toString().length === 10) {
     v = v * 1000

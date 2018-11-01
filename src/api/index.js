@@ -56,6 +56,8 @@ function syncData () {
   api.sendSync().then(function (data) {
     isR = false
     comparePushMessage(data)
+  }).catch(err => {
+    console.log('同步请求发生错误：', err)
   })
 }
 
@@ -89,10 +91,9 @@ function pullCommonMessage () {
         let lastId = tempArr[tempArr.length - 1].msgid
         store.commit('setPushMessage', {lastid: lastId})
         pullCommonMessage()
+      } else {
+        comparePushMessage()
       }
-      // else {
-      //   comparePushMessage()
-      // }
     }).catch(err => {
       console.log('拉取好友消息超时或发生错误：' + err)
     })

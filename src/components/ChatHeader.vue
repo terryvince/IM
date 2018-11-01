@@ -73,7 +73,7 @@
     <el-dialog title="添加好友" :visible.sync="isShowAddFriend">
       <el-form :model="formAddFriend">
         <el-form-item label="好友账号" :label-width="formLabelWidth">
-          <el-input v-model="formAddFriend.nickname" placeholder="请输入好友账号" autocomplete="off"></el-input>
+          <el-input v-model="formAddFriend.number" placeholder="请输入好友账号" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -96,7 +96,7 @@ export default {
       isShowMenu: false,
       isShowSearch: false,
       formGroup: {groupName: ''},
-      formAddFriend: {nickname: null},
+      formAddFriend: {number: null},
       formLabelWidth: '80px',
       isShowGroup: false,
       isShowAddFriend: false
@@ -124,6 +124,9 @@ export default {
           console.log(err)
         })
       this.displayGroup()
+    },
+    createFriend () {
+      api.addFriend(this.formAddFriend)
     },
     displayAddFriend () {
       this.isShowAddFriend = !this.isShowAddFriend

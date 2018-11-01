@@ -133,6 +133,29 @@ async function establishGroup ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemT
   return result
 }
 
+/* 添加好友
+ *
+ *number 好友账号
+ */
+async function addFriend ({number}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/addFriend',
+      {
+        number: number
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).catch(err => {
+    console.log('创建好友请求发生错误：', err)
+  })
+  return result
+}
+
 /* 查询好友信息
  *
  *  frid 好友通信id
@@ -162,29 +185,6 @@ async function getFriendInfoByAccount (account) {
     jc.request('/getFriendInfoByAccount',
       {
         account: account
-      }, function (res) {
-        if (!res.isSuccessed()) {
-          reject(res.getData())
-        } else {
-          resolve(res.getData())
-        }
-      })
-  }).then(function (data) {
-    result = data
-  })
-  return result
-}
-
-/* 拉取好友消息(聊天记录)     【废弃】
- *
- *  frlastid 好友消息id
- */
-async function getFriendsMessageList () {
-  let result
-  await new Promise(function (resolve, reject) {
-    jc.request('/getFriendsMessageList',
-      {
-        frlastid: store.state.pushMessage.frlastid
       }, function (res) {
         if (!res.isSuccessed()) {
           reject(res.getData())
@@ -315,7 +315,7 @@ async function sendSync () {
   }).then(data => {
     result = data
   }, err => {
-    console.log('同步请求发生错误或无返回值：', err)
+    console.log('同步请求无返回值：', err)
   })
   return result
 }
@@ -325,7 +325,6 @@ export {
   login,
   register,
   sendSync,
-  getFriendsMessageList,
   getFriendInfoById,
   getFriendInfoByAccount,
   sendToFriendMessage,
@@ -334,5 +333,6 @@ export {
   sendToGroupMessage,
   getAllMessageList,
   getGroupUserList,
-  getGroupUserInfo
+  getGroupUserInfo,
+  addFriend
 }
