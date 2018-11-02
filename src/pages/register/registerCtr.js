@@ -34,7 +34,7 @@ export default {
         }
         return
       }
-      if (!/^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/.test(this.form.password)) {
+      if (!/^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{8,20}$/.test(this.form.password)) {
         this.tip = '请输入6-20位字母，数字和特殊字符两个以上组合的密码！'
         if (!this.isShowAlert) {
           this.displayAlert()
@@ -51,9 +51,34 @@ export default {
       api.register(this.form).then(data => {
         if (data && data.code === 0) {
           // success
-          this.$router.push('/login')
+          localStorage.isLogin = true
+          localStorage.username = this.form.username
+          localStorage.password = this.form.password
+          this.$router.push('/')
         } else {
           console.log('注册失败:', data)
+          switch (data.code) {
+            case 1006:
+              this.tip = '账号已经占用！'
+              this.displayAlert()
+              break
+            case 1015:
+              this.tip = '密码错误！'
+              this.displayAlert()
+              break
+            case 1010:
+              this.tip = '验证码错误！'
+              this.displayAlert()
+              break
+            case 1011:
+              this.tip = '手机号已注册！'
+              this.displayAlert()
+              break
+            default:
+              this.tip = '注册失败！'
+              this.displayAlert()
+              break
+          }
         }
       }).catch(err => {
         console.log('注册请求发生错误：', err)

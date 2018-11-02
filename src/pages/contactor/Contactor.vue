@@ -567,6 +567,7 @@ export default ctr
 
 <template>
   <div class="contactor" @click="emitChatHeader()">
+    <!--邀请加入群-->
     <div class="main">
       <div class="main_inner dis-table">
         <div class="col-1" v-show="false">
@@ -658,7 +659,7 @@ export default ctr
                     <a @click="goSendMsg()" class="button">发消息</a>
                   </div>
                   <div class="action-area top-10">
-                    <a class="button">邀请加入群</a>
+                    <a @click="displayInvite()" class="button">邀请加入群</a>
                   </div>
                 </div>
 

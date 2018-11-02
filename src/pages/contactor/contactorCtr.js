@@ -43,6 +43,7 @@ export default {
     goSendMsg () {
       let me = this
       this.setCurrentForm(me.curSelItem)
+      // api.pullGroupMemberList(me.curSelItem)
       this.$router.push({name: 'session', params: {friendInfo: me.curSelItem}})
     },
     emitChatHeader () {

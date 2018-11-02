@@ -86,7 +86,14 @@ function pullCommonMessage () {
           return a.msgid - b.msgid
         })
         data.data.forEach(v => {
-          store.commit('addFriendMeassage', v)
+          switch (v.msgtype) {
+            case msgType.isCommonType(v.msgtype):
+              store.commit('addFriendMeassage', v)
+              break
+            case msgType.GROUP_MEMBER_ADD:
+              store.dispatch('addMember', v)
+              break
+          }
         })
         let lastId = tempArr[tempArr.length - 1].msgid
         store.commit('setPushMessage', {lastid: lastId})

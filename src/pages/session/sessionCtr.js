@@ -24,6 +24,7 @@ export default {
         {id: 2, msgType: 'text', msg: '好啊！', msgId: 6}
       ],
       cardParms: {},
+      msgType: msgType,
       isShowMenu: false,
       isShowSearch: false,
       isShowGroup: false,
@@ -45,6 +46,9 @@ export default {
     ...mapMutations(['setPushMessage', 'addFriendMeassage', 'setCurrentForm']),
     test (v) {
       alert(v)
+    },
+    compareMsgType (type) {
+      return msgType.isCommonType(type)
     },
     setProfileCard (e, profileCard) {
       this.cardParms = {event: e, data: profileCard}

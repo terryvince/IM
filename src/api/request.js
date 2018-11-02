@@ -1,5 +1,6 @@
 import {jc, bus, guid} from '@/utils'
 import store from '@/store'
+import msgType from './msgType'
 
 // 拉取好友列表
 async function getFriendsList () {
@@ -61,6 +62,10 @@ async function register ({logintype = 1, username, password}) {
       })
   }).then(function (data) {
     result = data
+    bus.$emit('login')
+    store.commit('loginChange', true)
+    store.commit('setUserId', parseInt(data.data.userid))
+    localStorage.setItem('userid', parseInt(data.data.userid))
   }, function (err) {
     result = err
   })
@@ -267,6 +272,34 @@ async function getGroupUserInfo ({frid, groupid}) {
   return result
 }
 
+/* 邀请好友进群
+ *
+ *  fromid 群id
+ *  member 好友id
+ */
+async function invitationGroupMember ({groupId, memberIds}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/invitationGroupMember',
+      {
+        fromid: groupId,
+        type: msgType.GROUP_MEMBER_ADD,
+        members: memberIds
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('邀请好友进群请求发生错误或超时：', err)
+  })
+  return result
+}
+
 /* 发送消息
  *
  *  fromid 好友消息id data 发送内容
@@ -334,5 +367,6 @@ export {
   getAllMessageList,
   getGroupUserList,
   getGroupUserInfo,
-  addFriend
+  addFriend,
+  invitationGroupMember
 }

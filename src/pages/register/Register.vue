@@ -4,19 +4,19 @@
     <form>
       <el-tooltip class="item" effect="dark" content="请输入4-16位以字母开头的用户名" placement="top">
         <div class="input-group fs-30 bottom-35">
-          <input class="txt-input fs-18" v-model="form.username" type="text" placeholder="请输入你的用户名">
+          <input class="txt-input fs-18" v-model="form.username" maxlength="16" type="text" placeholder="请输入你的用户名">
           <i class="icon icon-user"></i>
         </div>
       </el-tooltip>
       <el-tooltip class="item" effect="dark" content="请输入6-20位字母，数字和特殊字符两个以上组合成的密码" placement="top">
         <div class="input-group fs-30 bottom-35">
-          <input class="txt-input fs-18" v-model="form.password" type="password" placeholder="请输入你的密码">
+          <input class="txt-input fs-18" v-model="form.password" maxlength="20" type="password" placeholder="请输入你的密码">
           <i class="icon icon-lock"></i>
         </div>
       </el-tooltip>
       <el-tooltip class="item" effect="dark" content="请输入与密码一致" placement="top">
         <div class="input-group fs-30 bottom-35">
-          <input class="txt-input fs-18" v-model="form.comfirmPwd" type="password" placeholder="确认密码">
+          <input class="txt-input fs-18" v-model="form.comfirmPwd" maxlength="20" type="password" placeholder="确认密码">
           <i class="icon icon-lock"></i>
         </div>
       </el-tooltip>

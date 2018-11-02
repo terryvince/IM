@@ -143,6 +143,10 @@ Vue.filter('formatDate', function (v, option) {
   if (v.toString().length === 10) {
     v = v * 1000
   }
+  if (v.toString().length !== 13) {
+    console.log('时间源格式不正确：' + v.toString() + '不是一个毫秒时间戳！')
+    return
+  }
   let d = new Date(v)
   let second = d.getSeconds()
   let minute = d.getMinutes()
@@ -186,5 +190,10 @@ Vue.filter('formatDate', function (v, option) {
   }
   return v
 })
+
+let arr = [{a: 1, b: 2}, {d: 1, q: 2}]
+let ob = {a: 1, b: 2, c: 3}
+console.log(Object.assign(arr, ob))
+console.log('-----------------')
 
 export default vue

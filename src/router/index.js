@@ -25,7 +25,7 @@ const router = new Router({
       name: 'login',
       component: Login,
       meta: {
-        title: '登录窗口',
+        title: '登录',
         keepAlive: true
       }
     },
@@ -34,7 +34,7 @@ const router = new Router({
       name: 'register',
       component: Register,
       meta: {
-        title: '注册窗口',
+        title: '注册',
         keepAlive: false
       }
     },
@@ -44,7 +44,7 @@ const router = new Router({
       component: Session,
       props: true,
       meta: {
-        title: '会话窗口',
+        title: '会话',
         keepAlive: true
       }
     },

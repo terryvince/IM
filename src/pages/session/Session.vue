@@ -606,6 +606,18 @@ export default ctr
       transition-timing-function: cubic-bezier(.25,.46,.45,.94);
     }
   }
+  .message-system{
+    text-align: center;
+    margin: 10px auto;
+    max-width: 50%;
+    .system-content{
+      display: inline-block;
+      font-size: 12px;
+      padding: 1px 18px;
+      color: #b2b2b2;
+      border-radius: 2px;
+    }
+  }
 </style>
 
 <template>
@@ -652,7 +664,7 @@ export default ctr
               <div class="info">
                 <h3 class="nickname txt-left">
                   <span class="nickname-text">{{item.nickname}}</span>
-                  <span class="msg">{{item.lastedMsg && item.lastedMsg.data}}</span>
+                  <span class="msg" style="max-width:230px">{{item.lastedMsg && item.lastedMsg.data}}</span>
                 </h3>
               </div>
             </div>
@@ -668,7 +680,7 @@ export default ctr
             <div class="box-hd">
             <!--群成员列表-->
             <transition name="el-zoom-in-top">
-              <div v-show="isShowGroup" class="chatRoomMembersWrap">
+              <div v-show="isShowGroup" class="chatRoomMembersWrap" style="position: relative;z-index: 999">
                 <div class="mmpop members_wrp slide-down">
                   <div class="members">
                     <div class="members_inner">
@@ -690,23 +702,31 @@ export default ctr
             </div>
             <div class="scroll-wrap">
               <div class="box-bd" ref="msg_list">
-                <div class="message" :class="{'you':item.toidInt!=item.fromid && item.toidInt==userid,'me':item.fromid==userid,'no-arrow':item.msgtype == 3}" v-for="item of currentForm.messages" :key="item.msgid">
-                  <img class="avatar" src="../../assets/bg.jpg" alt="">
-                  <div class="content">
-                    <div class="bubble" :class="{'clear-bg':item.msgtype == 3}">
-                      <div class="bubble-cont">
-                        <div class="plain" v-if="item.msgtype == 1">
-                          <pre class="message-plain">{{item.data}}</pre>
-                          <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
-                          <img v-show="false" class="ico_loading" src="../../assets/loading.gif" alt="">
-                        </div>
-                        <div class="image" v-if="item.msgtype == 3">
-                          <img :src="item.msg" alt="" :style='item.style'>
-                          <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
-                          <img class="ico_loading" src="../../assets/loading.gif" alt="">
+              <!--currentForm.messages-->
+                <div class="message" :class="{'you':item.fromid!=0,'me':item.fromid==0,'no-arrow':item.msgtype == msgType.IMAGE|| item.msgtype == msgType.GROUP_IMAGE}" v-for="item of currentForm.messages" :key="item.msgid">
+                  <div v-if="compareMsgType(item.msgtype)" class="message-common">
+                    <img class="avatar" src="../../assets/bg.jpg" alt="">
+                    <div class="content">
+                      <div class="bubble" :class="{'clear-bg':item.msgtype == msgType.IMAGE|| item.msgtype == msgType.GROUP_IMAGE }">
+                        <div class="bubble-cont">
+                        <!--文本-->
+                          <div class="plain" v-if="item.msgtype == msgType.TEXT|| item.msgtype == msgType.GROUP_TEXT">
+                            <pre class="message-plain">{{item.data}}</pre>
+                            <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
+                            <img v-show="false" class="ico_loading" src="../../assets/loading.gif" alt="">
+                          </div>
+                          <!--图片-->
+                          <div class="image" v-if="item.msgtype == msgType.IMAGE|| item.msgtype == msgType.GROUP_IMAGE">
+                            <img :src="item.msg" alt="" :style='item.style'>
+                            <i v-show="false" class="icon icon-warning-circle-fill txt-warning" title="重新发送"></i>
+                            <img class="ico_loading" src="../../assets/loading.gif" alt="">
+                          </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div v-if="!compareMsgType(item.msgtype)" class="message-system clear">
+                    <span class="system-content">{{item.data}}</span>
                   </div>
                 </div>
               </div>

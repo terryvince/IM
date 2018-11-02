@@ -83,7 +83,7 @@ export default ctr
   <div class="login center box-shadow">
     <form>
       <div class="input-group fs-30">
-        <input v-model="loginForm.username" class="txt-input fs-18" type="text" placeholder="请输入你的用户名">
+        <input v-model="loginForm.username" class="txt-input fs-18" type="text" placeholder="请输入你的用户名或手机号">
         <i class="icon icon-user"></i>
       </div>
       <div class="input-group fs-30">
@@ -97,5 +97,13 @@ export default ctr
         <a class="left-float">忘记密码？</a>
       </div>
     </form>
+    <div v-if="isShowAlert" style="margin: 0 10px">
+      <el-alert
+        @close="displayAlert()"
+        :title="tip"
+        type="error"
+        show-icon>
+      </el-alert>
+    </div>
   </div>
 </template>

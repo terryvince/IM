@@ -46,35 +46,24 @@ export default {
   },
   addFriendMeassage (state, msg) {
     let other
-    let separatorIndex = msg.toid.indexOf('_') // 分隔符
-    let toid = parseInt(msg.toid.slice(separatorIndex + 1)) // 取出整数toid
-    let flag = msg.toid.slice(0, separatorIndex) // toid前缀
-    let userType = { g: 3, f: 1 }[flag] // 区分类型，是群还是好友
+    let toid = parseInt(msg.toid) // 取出整数toid
     msg.toidInt = toid
-    if (msg.fromid === toid) { // 判断收发方
-      other = msg.fromid
-    } else {
-      if (msg.fromid === state.userid) { // 我发出去的消息
-        other = toid
-      } else if (toid === state.userid) { // 别人发给我的消息
-        other = msg.fromid
-      }
-    }
+    other = toid
     if (!state.sessions[other]) { // 判断接收的消息存不存在会话
-      let form = {frid: other, messages: [], userType: userType}
-      if (userType === 3) { // 为新建的窗口命名
-        state.groupContactors.forEach(v => {
-          if (v.frid === other) {
-            Object.assign(form, v)
-          }
-        })
-      } else if (userType === 1) {
-        state.contactors.forEach(v => {
-          if (v.frid === other) {
-            Object.assign(form, v)
-          }
-        })
-      }
+      let form = {frid: other, messages: [], userType: 0}
+      // 为新建的窗口命名
+      state.groupContactors.forEach(v => {
+        if (v.frid === other) {
+          form.userType = 3
+          Object.assign(form, v)
+        }
+      })
+      state.contactors.forEach(v => {
+        if (v.frid === other) {
+          form.userType = 1
+          Object.assign(form, v)
+        }
+      })
       vue.$set(state.sessions, other, form)
     }
     state.sessions[other].messages.push(msg)

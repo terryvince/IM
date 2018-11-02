@@ -21,6 +21,12 @@
             添加好友
           </a>
         </li>
+        <li @click="displayInvite()">
+          <a>
+            <i class="icon icon-addteam"></i>
+            拉人进群
+          </a>
+        </li>
         <li @click="displayGroup()">
           <a>
             <i class="icon icon-addteam"></i>
@@ -82,14 +88,20 @@
       </div>
     </el-dialog>
 
+    <!--邀请加入群-->
+    <invitationGroupMember v-if="isShowInvite"></invitationGroupMember>
   </div>
 </template>
 
 <script>
+import invitationGroupMember from '../components/InvitationGroupMember'
 import {mapGetters, mapMutations} from 'vuex'
 import {api} from '../api'
 export default {
   name: 'chatHeader',
+  components: {
+    invitationGroupMember
+  },
   data () {
     return {
       data: '',
@@ -99,7 +111,8 @@ export default {
       formAddFriend: {number: null},
       formLabelWidth: '80px',
       isShowGroup: false,
-      isShowAddFriend: false
+      isShowAddFriend: false,
+      isShowInvite: false
     }
   },
   methods: {
@@ -126,7 +139,12 @@ export default {
       this.displayGroup()
     },
     createFriend () {
-      api.addFriend(this.formAddFriend)
+      // api.addFriend(this.formAddFriend).then(data => {
+      //
+      // })
+    },
+    displayInvite () {
+      this.isShowInvite = !this.isShowInvite
     },
     displayAddFriend () {
       this.isShowAddFriend = !this.isShowAddFriend
