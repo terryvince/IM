@@ -1,7 +1,7 @@
 <template>
     <div id="InvitationGroupMember">
       <!--群拉人弹框-->
-      <el-dialog title="拉人进群" :visible.sync="isShowInvite">
+      <el-dialog title="拉人进群" :visible.sync="isInvite">
         <el-form class="txt-left" :model="groupForm" :label-width="'80px'">
           <el-form-item label="选择群:">
             <el-select class="width-400" v-model="groupForm.groupId" placeholder="请选择">
@@ -48,26 +48,33 @@ import {mapGetters} from 'vuex'
 import {api} from '../api'
 export default {
   name: 'InvitationGroupMember',
-  props: ['memberid'],
+  props: ['memberid', 'isShowInvite'],
   data () {
     return {
       form: {},
       groupForm: {groupId: null, memberIds: []},
-      list: [],
-      isShowInvite: true
+      list: []
     }
   },
   methods: {
-    displayInvite () {
-      this.isShowInvite = !this.isShowInvite
-    },
     postInvite () {
       api.invitationGroupMember(this.groupForm)
-      this.displayInvite()
+      this.close()
+    },
+    close () {
+      this.$emit('close')
     }
   },
   computed: {
-    ...mapGetters(['groupContactors', 'contactors'])
+    ...mapGetters(['groupContactors', 'contactors']),
+    isInvite: {
+      get () {
+        return this.isShowInvite
+      },
+      set () {
+        this.close()
+      }
+    }
   }
 }
 </script>

@@ -698,6 +698,7 @@ export default ctr
                 <div class="title pointer">
                   <a @click="displayGroup()" class="title-name">{{currentForm.nickname}}<i :class="{'icon-down':!isShowGroup,'icon-up':isShowGroup}" class="icon"></i></a>
                 </div>
+                <i title="邀请入群" @click="$refs.chatHeader.showInvite()" class="right-float icon icon-plus-circle-fill fs-16 pointer"></i>
               </div>
             </div>
             <div class="scroll-wrap">

@@ -1,4 +1,4 @@
-// import {api} from '@/api'
+import {api} from '@/api'
 import {mapMutations, mapGetters} from 'vuex'
 import chatHeader from '../../components/ChatHeader'
 
@@ -43,7 +43,7 @@ export default {
     goSendMsg () {
       let me = this
       this.setCurrentForm(me.curSelItem)
-      // api.pullGroupMemberList(me.curSelItem)
+      api.pullGroupMemberList(this.curSelItem)
       this.$router.push({name: 'session', params: {friendInfo: me.curSelItem}})
     },
     emitChatHeader () {

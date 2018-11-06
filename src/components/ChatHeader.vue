@@ -21,7 +21,7 @@
             添加好友
           </a>
         </li>
-        <li @click="displayInvite()">
+        <li @click="showInvite()">
           <a>
             <i class="icon icon-addteam"></i>
             拉人进群
@@ -89,7 +89,7 @@
     </el-dialog>
 
     <!--邀请加入群-->
-    <invitationGroupMember v-if="isShowInvite"></invitationGroupMember>
+    <invitationGroupMember @close="hideInvite()" :isShowInvite="isShowInvite"></invitationGroupMember>
   </div>
 </template>
 
@@ -145,6 +145,12 @@ export default {
     },
     displayInvite () {
       this.isShowInvite = !this.isShowInvite
+    },
+    showInvite () {
+      this.isShowInvite = true
+    },
+    hideInvite () {
+      this.isShowInvite = false
     },
     displayAddFriend () {
       this.isShowAddFriend = !this.isShowAddFriend
