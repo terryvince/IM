@@ -1,9 +1,81 @@
 <script>
-import * as ctr from './contactorCtr'
+import ctr from './notifyCtr'
 export default ctr
 </script>
+<template>
+    <div id="notify">
+      <div class="main">
+        <div class="main_inner dis-table">
+          <div class="col-2 rel-position">
 
+            <chatHeader ref="chatHeader"></chatHeader>
+          </div>
+          <div class="col-3 rel-position">
+            <div class="profile-area">
+              <div class="box-hd">
+                <div class="title-wrap">
+                  <div class="title pointer">
+                    <a class="title-name">通知</a>
+                  </div>
+                </div>
+              </div>
+              <div class="scroll-wrap">
+                <div class="box-bd">
+                  <div v-for="v of notifyList.applyFriend" :key="v.msgId">
+                    <transition name="el-zoom-in-center">
+                      <el-card v-show="isShowNotify" class="notify-wrap" shadow="hover">
+                          <div class="notify-list-item">
+                            <div class="avatar">
+                              <img src="../../assets/bg.jpg" alt="">
+                            </div>
+                            <div class="content">
+                                <!--<p class="fs-14 txt-bold">大名鼎鼎&nbsp;&nbsp;<i class="icon icon-man txt-normal"></i></p>-->
+                                <p class="fs-12 lh-1_5">{{v.data}}&nbsp;</p>
+                            </div>
+                            <div class="action-wrap txt-right">
+                              <el-button @click="handleApply(1, v)" type="primary" size="small">同意</el-button>
+                              <el-button @click="handleApply(2, v)" type="warning" size="small">拒绝</el-button>
+                              <!--<el-button @click="displayNotify()" type="info" size="small">忽略</el-button>-->
+                            </div>
+                          </div>
+                      </el-card>
+                    </transition>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</template>
 <style scoped lang="scss">
+  .notify-wrap{
+    width: 95%;
+    margin: 10px auto 0;
+  }
+  .notify-list-item{
+    padding: 0;
+    font-size: 14px;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    .avatar{
+      float: left;
+      img{
+        width: 50px;
+      }
+    }
+    .content{
+      width: 50%;
+      float: left;
+      margin:0 20px;
+    }
+    .action-wrap{
+      width: 35%;
+      float: left;
+    }
+  }
   .main{
     height: 80%;
     min-height: 600px;
@@ -16,9 +88,6 @@ export default ctr
     .main{
       height: 100%;
       padding: 0;
-    }
-    .box-bd{
-      height: 100%!important;
     }
   }
   .main_inner{
@@ -156,13 +225,13 @@ export default ctr
       padding: 0!important;
     }
     .box-bd{
-      height: 551px;
+      height: 730px;
       bottom: 180px;
-      padding: 0 19px;
+      margin-right: 19px;
+      background: white;
       border: none!important;
       box-sizing: content-box!important;
       left: 0;
-      margin: 0;
       max-height: none!important;
       max-width: none!important;
       overflow: auto;
@@ -560,133 +629,4 @@ export default ctr
   .icon-woman{
     color: #FF0099;
   }
-  .action-area{
-    margin-bottom: 10px;
-  }
 </style>
-
-<template>
-  <div class="contactor" @click="emitChatHeader()">
-
-    <div class="main">
-      <div class="main_inner dis-table">
-        <div class="col-1" v-show="false">
-          <div class="title txt-center fs-20">切换账号</div>
-          <div class="switch-wrap">
-            <a class="btn btn-default bg-white bottom-10 top-10">客服1</a>
-            <a class="btn btn-default bg-white bottom-10">客服2</a>
-            <a class="btn btn-default bg-white">客服3</a>
-          </div>
-        </div>
-        <div class="col-2 rel-position">
-
-            <chatHeader ref="chatHeader"></chatHeader>
-          <div class="chat-list">
-
-            <h4 class="contact-title txt-left">好友</h4>
-            <div @click="selectedItem(item)" class="chat-item" v-for="item of contactors" :key="item.frid">
-              <div class="avatar">
-                <img v-show="item.headurl" :src="item.headurl" alt="头像">
-                <img v-show="!item.headurl" src="../../assets/bg.jpg" alt="头像">
-              </div>
-              <div class="info">
-                <h3 class="nickname txt-left">
-                  {{item.nickname}}
-                </h3>
-              </div>
-            </div>
-
-            <h4 class="contact-title txt-left">群组</h4>
-            <div @click="selectedItem(item)" class="chat-item" v-for="(item) of groupContactors" :key="item.frid">
-              <div class="avatar">
-                <img v-show="item.headurl" :src="item.headurl" alt="头像">
-                <img v-show="!item.headurl" src="../../assets/bg.jpg" alt="头像">
-              </div>
-              <div class="info">
-                <h3 class="nickname txt-left">
-                  {{item.nickname}}
-                </h3>
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="col-3 rel-position">
-          <div class="profile-area">
-            <div class="box-hd">
-              <div class="title-wrap">
-                <div class="title pointer">
-                  <a href="" class="title-name">详细信息</a>
-                </div>
-              </div>
-            </div>
-            <div class="scroll-wrap">
-              <div class="box-bd">
-                <i v-if="!curSelItem" class="icon-profile" style="font-size: 150px;"></i>
-
-                <!--好友信息-->
-                <div v-if="curSelItem && curSelItem.userType==1" class="profile">
-                  <div class="avatar">
-                    <img src="../../assets/profile.png" alt="">
-                  </div>
-                  <div class="nickname-wrap">
-                    <h4 class="nickname">{{curSelItem.nickname}}</h4>
-                    <i v-if="curSelItem.sex==0" class="sex icon icon-man fs-16"></i>
-                    <i v-if="curSelItem.sex==1" class="sex icon icon-woman fs-16"></i>
-                  </div>
-                  <!--<p class="signature">人的一生那么长，你不想着找一个陪你一起都下去吗？</p>-->
-                  <!--<div class="meta-area">-->
-                    <div class="meta-item">
-                      <label class="label">用户号：</label>
-                      <p class="value">{{curSelItem.usernum}}</p>
-                    </div>
-                    <!--<div class="meta-item">-->
-                      <!--<label class="label">地区：</label>-->
-                      <!--<p class="value">重庆 永川</p>-->
-                    <!--</div>-->
-                  <!--</div>-->
-                  <div class="action-area">
-                    <a @click="goSendMsg()" class="button">发消息</a>
-                  </div>
-                  <div class="action-area">
-                    <a @click="deleteFriend()" class="button">删除好友</a>
-                  </div>
-                </div>
-
-                <!--群信息-->
-                <div v-if="curSelItem && curSelItem.userType==3" class="profile">
-                  <div class="avatar">
-                    <img src="../../assets/profile.png" alt="">
-                  </div>
-                  <div class="nickname-wrap">
-                    <h4 class="nickname">{{curSelItem.nickname}}</h4>
-                    <i v-if="curSelItem.sex==0" class="sex icon icon-man fs-16"></i>
-                    <i v-if="curSelItem.sex==1" class="sex icon icon-woman fs-16"></i>
-                  </div>
-                  <!--<p class="signature">人的一生那么长，你不想着找一个陪你一起都下去吗？</p>-->
-                  <!--<div class="meta-area">-->
-                  <!--<div class="meta-item">-->
-                  <!--<label class="label">备注：</label>-->
-                  <!--<p class="value">名字</p>-->
-                  <!--</div>-->
-                  <!--<div class="meta-item">-->
-                  <!--<label class="label">地区：</label>-->
-                  <!--<p class="value">重庆 永川</p>-->
-                  <!--</div>-->
-                  <!--</div>-->
-                  <div class="action-area">
-                    <a @click="goSendMsg()" class="button">发消息</a>
-                  </div>
-                  <div class="action-area top-10">
-                    <!--<a class="button">解散群</a>-->
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>

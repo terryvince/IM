@@ -3,12 +3,14 @@ import {api, msgType} from '@/api'
 import {mapGetters, mapMutations} from 'vuex'
 import chatHeader from '../../components/ChatHeader'
 import profileCard from '../../components/ProfileCard'
+import modifyGroupInfo from '../../components/modifyGroupInfo'
 
 export default {
   name: 'session',
   components: {
     chatHeader,
-    profileCard
+    profileCard,
+    modifyGroupInfo
   },
   props: ['friendInfo'],
   data () {
@@ -43,9 +45,20 @@ export default {
     )
   },
   methods: {
-    ...mapMutations(['setPushMessage', 'addFriendMeassage', 'setCurrentForm']),
+    ...mapMutations(['setPushMessage', 'addFriendMeassage', 'setCurrentForm', 'delGroup', 'clearCurrentForm']),
     test (v) {
       alert(v)
+    },
+    quitGroup () {
+      let me = this
+      api.leaveGroup({groupId: me.currentForm.frid}).then(data => {
+        if (data.code === 1) {
+          alert('退出群失败！')
+        } else {
+          me.delGroup(me.currentForm.frid)
+          me.clearCurrentForm()
+        }
+      })
     },
     compareMsgType (type) {
       return msgType.isCommonType(type)

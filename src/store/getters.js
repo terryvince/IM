@@ -27,3 +27,5 @@ export const lostConnect = state => state.lostConnect
 export const unSendMsg = state => state.unSendMsg
 
 export const friendsInfo = state => state.friendsInfo
+
+export const notifyList = state => state.notifyList

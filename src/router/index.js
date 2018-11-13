@@ -5,6 +5,7 @@ import Session from '@/pages/session/Session'
 import Login from '@/pages/login/Login'
 import Register from '@/pages/register/Register'
 import Contactor from '@/pages/contactor/Contactor'
+import Notify from '@/pages/notify/Notify'
 import Test from '@/pages/test/Test'
 
 Vue.use(Router)
@@ -54,6 +55,15 @@ const router = new Router({
       component: Contactor,
       meta: {
         title: '通讯录（好友列表）',
+        keepAlive: true
+      }
+    },
+    {
+      path: '/notify',
+      name: 'notify',
+      component: Notify,
+      meta: {
+        title: '通知',
         keepAlive: true
       }
     },

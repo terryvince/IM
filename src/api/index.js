@@ -4,6 +4,8 @@ import store from '@/store'
 import * as request from './request'
 import './response'
 import msgType from './msgType'
+import closeType from './closeType'
+import codeType from './codeType'
 
 let api = {
   ...request,
@@ -64,7 +66,7 @@ function syncData () {
 // {"idx":5,"code":200,"data":{"lastid":4,"frlastid":1,"grlastid":1,"sylastid":1,"time":9999}}
 // 比较同步请求是否一致
 function comparePushMessage (data) {
-  if (data && data.code !== 1 && data.lastid !== store.state.pushMessage.lastid) {
+  if (data && data.code !== 1 && data.data.lastid !== store.state.pushMessage.lastid) {
     store.commit('setTempPushMessage', data.data)
     pullCommonMessage()
     console.log('进入lastid比较分支')
@@ -87,11 +89,23 @@ function pullCommonMessage () {
         })
         data.data.forEach(v => {
           switch (v.msgtype) {
+            // 屏蔽已删除的好友消息群消息
             case msgType.isCommonType(v.msgtype):
-              store.commit('addFriendMeassage', v)
+              if (isMyMsg(v)) {
+                store.commit('addFriendMeassage', v)
+              }
               break
             case msgType.GROUP_MEMBER_ADD:
+              // 屏蔽已删除的群成员添加消息
               store.dispatch('addMember', v)
+              break
+            case msgType.FRIEND_APPLY:
+              // todo 好友申请通知
+              store.dispatch('getApplyList', 'applyFriend')
+              break
+            case msgType.FRIEND_AGREE:
+              // 屏蔽已删除的好友申请消息
+              store.dispatch('updateContactor', v)
               break
           }
         })
@@ -108,6 +122,13 @@ function pullCommonMessage () {
     syncData()
   }
   // compareId()
+}
+
+function isMyMsg (msg) {
+  let toid = parseInt(msg.toid)
+  let isFriendMsg = store.state.contactors.find(ob => ob.frid === toid)
+  let isGroupMsg = store.state.groupContactors.find(ob => ob.frid === toid)
+  return isFriendMsg || isGroupMsg
 }
 
 // 比较所有id是否一致 调用了同步请求syncData
@@ -132,6 +153,9 @@ async function pullContactList () {
     api.getFriendsList().then(function (data) {
       if (data.code === 0) {
         tempArr = data.data
+        if (tempArr.length === 0) {
+          resolve(0)
+        }
         tempArr.forEach(v => {
           api.getFriendInfoById(v).then(function (data) {
             data.data.frid = v
@@ -192,4 +216,4 @@ async function pullGroupMemberList (item) {
   return groupMemberList
 }
 
-export {api, comparePushMessage, msgType}
+export {api, comparePushMessage, msgType, closeType, codeType, isMyMsg}

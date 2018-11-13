@@ -13,6 +13,7 @@ const state = {
   unreadMsgCount: 0,
   unreadReqCount: 0,
   contactors: [],
+  notifyList: {applyFriend: []},
   groupContactors: [],
   groupMemberList: [],
   // {"idx":5,"code":200,"data":{"lastid":4,"time":9999}}

@@ -24,7 +24,7 @@ export default {
     ])
   },
   methods: {
-    ...mapMutations(['setCurrentForm']),
+    ...mapMutations(['setCurrentForm', 'delFriend']),
     test (v) {
       alert(v)
     },
@@ -39,6 +39,17 @@ export default {
     },
     selectedItem (item) {
       this.curSelItem = item
+    },
+    deleteFriend () {
+      let me = this
+      api.removeFriend({fromid: me.curSelItem.frid}).then(data => {
+        if (data.code === 1) {
+          alert('删除好友失败！')
+        } else {
+          me.delFriend(me.curSelItem.frid)
+          me.curSelItem = null
+        }
+      })
     },
     goSendMsg () {
       let me = this

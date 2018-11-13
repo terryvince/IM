@@ -626,6 +626,9 @@ export default ctr
     <!--资料卡片-->
     <profileCard v-show="isShowProfileCard" :cardParms="cardParms"></profileCard>
 
+    <!--修改群资料弹框-->
+    <modifyGroupInfo :groupId="currentForm.frid" :nickname="currentForm.nickname" ref="modifyGroupInfo"></modifyGroupInfo>
+
     <div class="main">
       <div class="main_inner dis-table">
         <div class="col-1" v-show="false">
@@ -641,16 +644,6 @@ export default ctr
         <div class="col-2 rel-position">
 
             <chatHeader ref="chatHeader"></chatHeader>
-
-          <div class="tab">
-            <div class="tab-item">
-              <router-link :to="{path:'/'}"><i class="icon icon-message-fill fs-28" style="color: #3caf36"></i></router-link>
-            </div>
-            <div class="tab-item">
-              <router-link :to="{path:'/contactor'}"><i class="icon icon-team fs-28 txt-white"></i></router-link>
-            </div>
-
-          </div>
           <div class="chat-list">
 
             <div @click="selectedItem(item)" :class="{'active':item.isSelected}" class="chat-item" v-for="item of sessions" :key="item.frid">
@@ -694,11 +687,14 @@ export default ctr
                 </div>
               </div>
             </transition>
+            <!--聊天框顶部-->
               <div class="title-wrap">
                 <div class="title pointer">
                   <a @click="displayGroup()" class="title-name">{{currentForm.nickname}}<i :class="{'icon-down':!isShowGroup,'icon-up':isShowGroup}" class="icon"></i></a>
                 </div>
                 <i title="邀请入群" @click="$refs.chatHeader.showInvite()" class="right-float icon icon-plus-circle-fill fs-16 pointer"></i>
+                <i title="退出群" @click="quitGroup()" style="margin-right: 10px" class="right-float icon icon-delete-fill fs-16 pointer"></i>
+                <i title="修改群资料" @click="$refs.modifyGroupInfo.dispalyChangeGroup()" style="margin-right: 10px" class="right-float icon icon-team fs-16 pointer"></i>
               </div>
             </div>
             <div class="scroll-wrap">

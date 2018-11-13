@@ -38,6 +38,7 @@ import {
   Icon,
   Row,
   Col,
+  Card,
   Upload,
   Progress,
   Loading,
@@ -80,6 +81,7 @@ Vue.use(FormItem)
 Vue.use(Alert)
 Vue.use(Icon)
 Vue.use(Row)
+Vue.use(Card)
 Vue.use(Col)
 Vue.use(Upload)
 Vue.use(Progress)
@@ -190,10 +192,5 @@ Vue.filter('formatDate', function (v, option) {
   }
   return v
 })
-
-let arr = [{a: 1, b: 2}, {d: 1, q: 2}]
-let ob = {a: 1, b: 2, c: 3}
-console.log(Object.assign(arr, ob))
-console.log('-----------------')
 
 export default vue

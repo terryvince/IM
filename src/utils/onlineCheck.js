@@ -11,11 +11,11 @@ const EventListener = {
 }
 
 EventListener.addEvent(window, 'online', function () {
-  alert('已连接互联网！')
+  // alert('已连接互联网！')
 })
 
 EventListener.addEvent(window, 'offline', function () {
-  alert('请注意，您已断开互联网连接，应用将不能正常运行！')
+  // alert('请注意，您已断开互联网连接，应用将不能正常运行！')
 })
 
 export default EventListener

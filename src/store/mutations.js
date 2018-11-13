@@ -16,6 +16,17 @@ export default {
   loginChange (state, isLogin) {
     state.isLogin = isLogin
   },
+  delFriend (state, id) {
+    vue.$delete(state.sessions, id)
+    state.contactors = state.contactors.filter(v => id !== v.frid)
+  },
+  delGroup (state, id) {
+    vue.$delete(state.sessions, id)
+    state.groupContactors = state.groupContactors.filter(v => id !== v.frid)
+  },
+  setNotifyList (state, {key, data}) {
+    state.notifyList[key] = data
+  },
   setContactors (state, arr) {
     state.contactors = arr
   },
@@ -27,6 +38,9 @@ export default {
   },
   setProfile (state, ob) {
     state.profile = ob
+  },
+  changeProfile (state, ob) {
+    Object.assign(state.profile, ob)
   },
   setTempPushMessage (state, ob) {
     state.tempPushMessage = ob
@@ -43,6 +57,9 @@ export default {
       Object.assign(state.sessions[key], ob)
     }
     state.currentForm = state.sessions[key]
+  },
+  clearCurrentForm (state) {
+    state.currentForm = {}
   },
   addFriendMeassage (state, msg) {
     let other
@@ -71,10 +88,10 @@ export default {
     vue.$set(state.sessions[other], 'lastedMsg', msg)
   },
   addUnSendedMsg (state, msg) {
-    state.unSendedMsg[msg.localid] = msg
+    vue.$set(state.unSendedMsg, msg.localid, msg)
   },
   setSendedMsg (state, msg) {
-    delete state.unSendedMsg[msg.localid]
+    vue.$delete(state.unSendedMsg, msg.localid)
   },
   setUserId (state, id) {
     state.userid = id

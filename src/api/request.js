@@ -142,12 +142,13 @@ async function establishGroup ({ver = 0, deviceId = 'FC-AA-14-BC-7D-01', systemT
  *
  *number 好友账号
  */
-async function addFriend ({number}) {
+async function addFriend ({number, data = null}) {
   let result
   await new Promise(function (resolve, reject) {
     jc.request('/addFriend',
       {
-        number: number
+        number: number,
+        data: data
       }, function (res) {
         if (!res.isSuccessed()) {
           reject(res.getData())
@@ -156,7 +157,7 @@ async function addFriend ({number}) {
         }
       })
   }).catch(err => {
-    console.log('创建好友请求发生错误：', err)
+    console.log('添加好友请求发生错误或超时：', err)
   })
   return result
 }
@@ -222,6 +223,31 @@ async function getAllMessageList () {
       })
   }).then(function (data) {
     result = data
+  })
+  return result
+}
+
+/* 查询好友信息（通过账号查找）
+ *
+ *  number 好友账号
+ */
+async function viewFriendInfo ({number}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/findFriend',
+      {
+        number: number
+      }, function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('查询好友信息发生错误或超时：' + err)
   })
   return result
 }
@@ -326,7 +352,8 @@ function sendToGroupMessage ({groupId, content, msgtype}) {
     msgtype: msgtype,
     localid: guid()
   }
-  jc.request('/onMessageGroup', msg)
+  jc.request('/friendMessage', msg)
+  // onMessageGroup
 }
 
 /*
@@ -353,6 +380,157 @@ async function sendSync () {
   return result
 }
 
+/* 拉取（好友群等）申请列表
+ *
+ */
+async function getApplyList () {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/getApplyMessage', null, function (res) {
+      if (!res.isSuccessed()) {
+        reject(res.getData())
+      } else {
+        resolve(res.getData())
+      }
+    })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('拉取申请列表发生错误', err)
+  })
+  return result
+}
+
+/* 处理申请（同意或拒绝）
+ *
+ */
+async function handleApply ({type, msgid, fromid}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/refusingOrAgree',
+      {
+        type: type,
+        msgid: msgid,
+        fromid: fromid
+      },
+      function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('处理申请请求发生错误', err)
+  })
+  return result
+}
+
+/* 删除好友
+ * fromid 好友id
+ */
+async function removeFriend ({fromid}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/removeFriend',
+      {
+        fromid: fromid
+      },
+      function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('删除好友请求发生错误', err)
+  })
+  return result
+}
+
+/* 退出群
+ * fromid 群id
+ */
+async function leaveGroup ({groupId}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/leaveGroup',
+      {
+        fromid: groupId
+      },
+      function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('退出群请求发生错误', err)
+  })
+  return result
+}
+
+/* 修改个人资料
+ * usernum 用户号（即微信号）， nickname 昵称， sex 性别
+ */
+async function modifyUserInfo ({usernum, nickname, sex}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/modifyUserInfo',
+      {
+        usernum: usernum,
+        nickname: nickname,
+        sex: sex
+      },
+      function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('修改个人资料请求发生错误', err)
+  })
+  return result
+}
+
+/* 修改群资料
+ * groupId 用户号（即微信号）， nickname 昵称
+ */
+async function modifyGroupInfo ({groupId, nickname}) {
+  let result
+  await new Promise(function (resolve, reject) {
+    jc.request('/modifyGroupInfo',
+      {
+        fromid: groupId,
+        nickname: nickname
+      },
+      function (res) {
+        if (!res.isSuccessed()) {
+          reject(res.getData())
+        } else {
+          resolve(res.getData())
+        }
+      })
+  }).then(function (data) {
+    result = data
+  }).catch(err => {
+    console.log('修改群资料请求发生错误', err)
+  })
+  return result
+}
+
 export {
   getFriendsList,
   login,
@@ -368,5 +546,12 @@ export {
   getGroupUserList,
   getGroupUserInfo,
   addFriend,
-  invitationGroupMember
+  invitationGroupMember,
+  viewFriendInfo,
+  getApplyList,
+  handleApply,
+  removeFriend,
+  leaveGroup,
+  modifyUserInfo,
+  modifyGroupInfo
 }
