@@ -6,7 +6,7 @@ function Jsonclient () {
   // 测试服务器
   // let webUrl = 'ws://192.168.1.184:37011'
   // 本地服务器
-  let webUrl = 'ws://192.168.1.196:35000'
+  let webUrl = 'ws://192.168.1.196:8096'
   let ws = new WebSocket(webUrl)
   let me = this
   let timer = null

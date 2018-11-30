@@ -96,7 +96,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next('/404')
   }
-  // next()
 })
 
 export default router
